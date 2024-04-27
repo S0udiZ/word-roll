@@ -8,7 +8,7 @@ let sides = 8;
 //#region word_roll function
 async function word_roll() {
 	const word_length = string.length;
-	const word_roll_array = [string];
+	const word_roll_array = [string.toUpperCase()];
 	for (let i = 1; i < sides; i++) {
 		let word_roll = "";
 		for (let j = 0; j < word_length; j++) {
@@ -19,7 +19,7 @@ async function word_roll() {
 			// add the random letter to the word
 			word_roll += random_letter;
 		}
-		word_roll_array.push(word_roll);
+		word_roll_array.push(word_roll.toUpperCase());
 	}
 	output = await scramble(word_roll_array.map((word) => word.split("")));
 }
