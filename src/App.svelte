@@ -1,12 +1,13 @@
 <script lang="ts">
 // biome-ignore lint/style/useConst: <explanation>
-let string = "january";
-let output: string[][] = [];
+let string: string = $state("january");
+let output: string[][] = $state([]);
 // biome-ignore lint/style/useConst: <explanation>
-let sides = 8;
+let sides: number = $state(8);
 
 //#region word_roll function
-async function word_roll() {
+async function word_roll(e: Event) {
+  e.preventDefault();
 	const word_length = string.length;
 	const word_roll_array = [string.toUpperCase()];
 	for (let i = 1; i < sides; i++) {
@@ -117,13 +118,13 @@ async function scramble(y: string[][]) {
 
 <main class="">
   <!-- MARK: input form -->
-  <form on:submit|preventDefault={word_roll} class="mx-auto w-fit flex gap-4">
+  <form onsubmit={word_roll} class="mx-auto w-fit flex gap-4">
     <label for="sides" class="flex flex-col text-xl font-bold w-fit">
       Sides:
       <select
         class="font-bold text-xl border-2 border-black rounded-full h-10"
         bind:value={sides}
-        on:change={() => (output = [])}
+        onchange={() => (output = [])}
       >
         {#each [4, 6, 8, 10, 12, 20] as side}
           <option value={side}>{side}</option>
@@ -139,17 +140,17 @@ async function scramble(y: string[][]) {
           type="text"
           class="font-normal h-10"
           bind:value={string}
-          on:input={() => (output = [])}
+          oninput={() => (output = [])}
         />
         <button
           class="bg-green-500 size-10 grid place-items-center text-3xl text-white rounded-r-full"
-          on:click={word_roll}
+          onclick={word_roll}
         >
           &#10162;
         </button>
       </div>
     </label>
-    <label class="flex flex-col w-fit">Scramble<button type="button" class="text-4xl bg-green-500 size-12 rounded-xl border-2 border-black grid place-content-center" on:click={() => scramble(output).then(res => (output = res))}>&#127922;</button></label>
+    <label class="flex flex-col w-fit">Scramble<button type="button" class="text-4xl bg-green-500 size-12 rounded-xl border-2 border-black grid place-content-center" onclick={() => scramble(output).then(res => (output = res))}>&#127922;</button></label>
   </form>
   <!-- MARK: fake spinner -->
   {#if output.length === 0}
@@ -190,7 +191,7 @@ async function scramble(y: string[][]) {
             </div> -->
           <!-- MARK: new spinner -->
             <div class="spinWheelContainer">
-              <button class="size-14 text-5xl text-green-500" on:click={() => spinUp(i)}>&#9650;</button>
+              <button class="size-14 text-5xl text-green-500" onclick={() => spinUp(i)}>&#9650;</button>
               <div id={`spinWheel-${i}`} class="spinWheel" style={
                 `margin-top: ${(56 * ((sides / 4 - 1 ) * 0.7))}px;
                  margin-bottom: ${(56 * (( sides / 4 - 1 )) * 0.7)}px;`
@@ -202,7 +203,7 @@ async function scramble(y: string[][]) {
                   }>{letter}</span>
                 {/each}
               </div>
-              <button class="size-14 text-5xl text-green-500" on:click={() => spinDown(i)}>&#9660;</button>
+              <button class="size-14 text-5xl text-green-500" onclick={() => spinDown(i)}>&#9660;</button>
             </div>
           {/each}
         </div>
