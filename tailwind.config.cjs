@@ -7,7 +7,7 @@ const config = {
   },
 
   plugins: [
-    require('tailwindcss-3d')
+    require('@tailwindcss/forms'),require('tailwindcss-3d')
   ],
 };
 

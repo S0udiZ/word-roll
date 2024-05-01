@@ -1,22 +1,22 @@
 <script lang="ts">
-// biome-ignore lint/style/useConst: <explanation>
 let string: string = $state("january");
 let output: string[][] = $state([]);
-// biome-ignore lint/style/useConst: <explanation>
 let sides: number = $state(8);
+let charactersGroup: string[] = $state(["abcdefghijklmnopqrstuvwxyz"]);
+let customCharacters: string = $state("");
 
 //#region word_roll function
 async function word_roll(e: Event) {
   e.preventDefault();
+  console.log(charactersGroup);
+  const characters = charactersGroup.join("") + customCharacters;
 	const word_length = string.length;
 	const word_roll_array = [string.toUpperCase()];
 	for (let i = 1; i < sides; i++) {
 		let word_roll = "";
 		for (let j = 0; j < word_length; j++) {
 			// create a random letter
-			const random_letter = String.fromCharCode(
-				Math.floor(Math.random() * 26) + 97,
-			);
+			const random_letter = characters[Math.floor(Math.random() * characters.length)];
 			// add the random letter to the word
 			word_roll += random_letter;
 		}
@@ -122,7 +122,7 @@ async function scramble(y: string[][]) {
     <label for="sides" class="flex flex-col text-xl font-bold w-fit">
       Sides:
       <select
-        class="font-bold text-xl border-2 border-black rounded-full h-10"
+        class="font-bold text-xl border-2 border-black rounded-full"
         bind:value={sides}
         onchange={() => (output = [])}
       >
@@ -138,12 +138,12 @@ async function scramble(y: string[][]) {
       >
         <input
           type="text"
-          class="font-normal h-10"
+          class="font-normal"
           bind:value={string}
           oninput={() => (output = [])}
         />
         <button
-          class="bg-green-500 size-10 grid place-items-center text-3xl text-white rounded-r-full"
+          class="bg-green-500 w-10 grid place-items-center text-3xl text-white rounded-r-full"
           onclick={word_roll}
         >
           &#10162;
@@ -152,9 +152,27 @@ async function scramble(y: string[][]) {
     </label>
     <label class="flex flex-col w-fit">Scramble<button type="button" class="text-4xl bg-green-500 size-12 rounded-xl border-2 border-black grid place-content-center" onclick={() => scramble(output).then(res => (output = res))}>&#127922;</button></label>
   </form>
+    <div class="w-full min-w-0 characters">
+      <label>
+        <input type="checkbox" bind:group={charactersGroup} value="abcdefghijklmnopqrstuvwxyz" checked>
+        a-z
+      </label>
+      <label>
+        <input type="checkbox" bind:group={charactersGroup} value="0123456789">
+        0-9
+      </label>
+      <label>
+        <input type="checkbox" bind:group={charactersGroup} value="!@#$%^&*()_+">
+        special characters
+      </label>
+      <label class="col-span-3 mx-auto">
+        <input type="text" id="customCharacters" bind:value={customCharacters}>
+        custom characters
+      </label>
+    </div>
   <!-- MARK: fake spinner -->
   {#if output.length === 0}
-    <div class="flex gap-1 mt-4">
+    <div class="flex gap-1 mt-4 mx-auto w-fit">
       {#each string.split("") as letter}
         <div>
           <button disabled class="size-14 text-5xl text-green-500 opacity-65"
@@ -173,7 +191,7 @@ async function scramble(y: string[][]) {
     </div>
   {/if}
     {#if output.length > 0}
-      <div class="relative w-fit h-fit">
+      <div class="relative w-fit h-fit mx-auto">
         <hr class="border-4 border-black absolute -left-4 -right-4 rounded-full top-1/2 z-[9999] opacity-20">
         <div class="flex gap-1 mt-4">
           {#each string.split("") as _, i}
@@ -231,5 +249,21 @@ async function scramble(y: string[][]) {
 
   .spinWheel {
     @apply grid place-items-center size-14 relative transform-style-3d transition-transform;
+  }
+
+  .characters {
+    @apply grid grid-cols-3 gap-4 w-fit min-w-0 mx-auto mt-4;
+
+    label {
+      @apply flex gap-2 w-fit text-xl mx-auto;
+    }
+
+    input[type="text"] {
+      @apply border-2 border-black rounded-lg;
+    }
+  }
+
+  input[type="checkbox"] {
+    @apply size-7 rounded-lg;
   }
 </style>
